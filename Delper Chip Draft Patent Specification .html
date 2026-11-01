@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revenue Processor Node with Hardware-Segregated Ingestion, Cryptographic, and Isolation Domains</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --text: #1a1a1a;
+    --muted: #555555;
+    --rule: #cccccc;
+    --accent: #1f4e79;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161616;
+      --text: #ececec;
+      --muted: #aaaaaa;
+      --rule: #3a3a3a;
+      --accent: #8ab4e0;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #161616;
+    --text: #ececec;
+    --muted: #aaaaaa;
+    --rule: #3a3a3a;
+    --accent: #8ab4e0;
+  }
+  :root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  *, *::before, *::after { box-sizing: inherit; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: 1.5rem; line-height: 1.3; margin: 0 0 12px; color: var(--accent); }
+  h2 { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: 1.15rem; margin: 40px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); color: var(--accent); }
+  h3 { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: 1rem; margin: 28px 0 8px; color: var(--text); }
+  .meta { color: var(--muted); font-size: 0.95rem; margin: 0 0 8px; }
+  .para { margin: 0 0 16px; text-align: left; }
+  .num { font-weight: bold; margin-right: 4px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: 0.9rem; color: var(--accent); }
+  .claims ol { padding-left: 0; list-style: none; counter-reset: claim; }
+  .claims li { counter-increment: claim; margin: 0 0 18px; }
+  .claims li::before { content: counter(claim) ". "; font-weight: bold; }
+  .claims p { margin: 0 0 8px; }
+  .claims p.indent { padding-left: 2em; }
+  .abstract p { margin: 0; }
+  .placeholder { color: var(--muted); font-style: italic; }
+  .doc-footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.85rem; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  @media print {
+    body { font-size: 11pt; }
+    .wrap { max-width: none; padding: 0; }
+    h2 { break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Revenue Processor Node with Hardware-Segregated Ingestion, Cryptographic, and Isolation Domains</h1>
+<p class="meta">Applicant: <span class="placeholder">[Delper Group Semiconductor, confirm legal entity]</span></p>
+<p class="meta">Inventors: <span class="placeholder">[to be completed]</span></p>
+<p class="meta">Attorney Docket No.: <span class="placeholder">[____]</span></p>
+
+<h2>Cross-Reference to Related Applications</h2>
+<p class="para"><span class="num">[0001]</span> <span class="placeholder">[Insert any claim of priority to a provisional or foreign application, or state "None."]</span></p>
+
+<h2>Statement Regarding Federally Sponsored Research or Development</h2>
+<p class="para"><span class="num">[0002]</span> <span class="placeholder">[Insert statement, or state "Not applicable."]</span></p>
+
+<h2>Field</h2>
+<p class="para"><span class="num">[0003]</span> The present disclosure relates to application-specific integrated circuits (ASICs). More particularly, it relates to a revenue processor node that performs transaction ingestion, telemetry ingestion, cryptographic processing, and network-isolation enforcement in dedicated silicon deployed at network edge locations and within core transaction datacenters.</p>
+
+<h2>Background</h2>
+<p class="para"><span class="num">[0004]</span> Transaction, metering, and logistics workloads are commonly implemented as software microservices executing on general-purpose processors. Each transaction typically traverses an operating system network stack, shared memory, and one or more networked databases before it is recorded. This arrangement introduces latency that varies with load, and it places application logic, key handling, and network access within a single shared trust domain.</p>
+<p class="para"><span class="num">[0005]</span> Three problems follow from this arrangement. First, high-volume retail traffic can saturate the same processing pipelines that carry high-value bulk enterprise trade, so a spike in one class of traffic can delay the other. Second, cryptographic operations performed in software share memory and privilege boundaries with application code, which weakens the isolation of key material. Third, industrial and logistics systems connected to external networks can receive remote commands that alter physical processes, and isolation implemented only in software can be bypassed or disabled by an attacker who has compromised the host.</p>
+<p class="para"><span class="num">[0006]</span> Transit infrastructure such as ports, rail corridors, and highways also produces high-velocity telemetry. Recording that telemetry as append-only time-series entries requires buffering that absorbs bursts without stalling the processes that compute tariffs from it.</p>
+<p class="para"><span class="num">[0007]</span> There is a need for a processing node in which ingestion, computation, cryptography, and network isolation are separated in hardware, so that each function has a dedicated datapath and a defined trust boundary.</p>
+
+<h2>Summary</h2>
+<p class="para"><span class="num">[0008]</span> In one aspect, a revenue processor node is provided. The node includes an ingestion domain with separate transceiver interfaces for a first commerce track and a second commerce track, the two tracks being arbitrated so that traffic on one does not block traffic on the other. A supplier bidding interface, coupled to a low-latency cache, computes assignment parameters as checkout events arrive. An order queuing buffer packages orders into standardized message payloads.</p>
+<p class="para"><span class="num">[0009]</span> The node further includes a toll processing domain with inputs for telemetry, hardware arithmetic units that compute tariffs, and a time-series buffer that accepts append-only entries. A cryptographic domain, physically separated from the ingestion and toll processing domains, includes encryption and hash accelerators, a tamper-resistant key store, and mutual TLS hardware. An isolation gate includes a write-lock that prevents modification of active control programs without a verification signal, a self-quarantine trigger, and a blast-radius circuit that asserts a link-drop signal when a threat indicator or a malformed-frame count exceeds a threshold. A revenue pooling bus receives processed values and appends them to a ledger.</p>
+<p class="para"><span class="num">[0010]</span> In another aspect, a method of responding to an internal anomaly in a revenue processor node, and a method of processing transactions at an edge node, are provided, as set out in the claims.</p>
+
+<h2>Brief Description of the Drawings</h2>
+<p class="para"><span class="num">[0011]</span> FIG. 1 is a hardware schematic of a revenue processor node, identified as Aegis DRM Node Rev 4.1, according to an embodiment of the present disclosure.</p>
+<p class="para"><span class="num">[0012]</span> <span class="placeholder">[FIG. 2 (ingestion datapath), FIG. 3 (isolation gate state machine), and FIG. 4 (method flowchart) to be prepared.]</span></p>
+
+<h2>Detailed Description</h2>
+
+<h3>Overview</h3>
+<p class="para"><span class="num">[0013]</span> Reference is made to FIG. 1. A revenue processor node 100 is implemented as a single integrated circuit in an example embodiment fabricated in a 5 nanometer FinFET process. The node is deployed at each of a plurality of coastal hubs, for example on the order of 2,147 hubs in one example deployment, and within core transaction datacenters. The node 100 may operate as a standalone processor or as one of several nodes coupled by a ring bus 109.</p>
+<p class="para"><span class="num">[0014]</span> The node 100 comprises an ingestion and commerce engine 102, a toll processing domain 110, a cryptographic domain 118, an isolation gate 126, and a revenue pooling bus 134. Data passes from ingestion to toll processing, and from toll processing to the revenue pooling bus, only through the cryptographic domain. Control signals from the isolation gate reach the other domains without passing through software.</p>
+<p class="para"><span class="num">[0015]</span> As used herein, the gatekeeper refers to the isolation gate 126 together with the write-lock 128, the self-quarantine trigger 130, and the blast-radius circuit 132. The gatekeeper is the only path by which an external command can reach connected automation equipment, and it is implemented in hardware that software executing on the node cannot reconfigure.</p>
+
+<h3>Ingestion and Commerce Engine 102</h3>
+<p class="para"><span class="num">[0016]</span> The ingestion and commerce engine 102 is the entry point for interactions with buyers and enterprise counterparties. It includes a commerce interface 104, a supplier bidding interface 106, and an order queuing buffer 108.</p>
+<p class="para"><span class="num">[0017]</span> The commerce interface 104 includes transceiver pins and associated serializer-deserializer lanes that are separated by track. A first track carries bulk enterprise trade (Track A), and a second track carries global retail marketplace traffic (Track B). Each track has its own input queue and arbiter. The arbiters are independent, so that a surge in Track B traffic cannot back-pressure Track A. In one example, Track B is provisioned to serve a retail population of up to several billion buyer accounts in aggregate across the deployment, for example 6.0 billion. The separation is maintained in silicon, not by a software scheduler.</p>
+<p class="para"><span class="num">[0018]</span> The supplier bidding interface 106 is a dedicated block coupled to an ultra-low-latency cache 107. When a checkout event clears on Track B, the block computes factory assignment parameters from bid state held in the cache and returns them without invoking a processor core. Because the cache is local to the block, the computation does not wait on external memory.</p>
+<p class="para"><span class="num">[0019]</span> The order queuing buffer 108 is an SRAM-backed buffer. It receives raw orders, packages each order into a standardized message payload, and stream-loads the payloads onto the ring bus 109. The buffer decouples the arrival rate of orders from the rate at which downstream domains accept work.</p>
+
+<h3>Toll Processing Domain 110</h3>
+<p class="para"><span class="num">[0020]</span> The toll processing domain 110 computes transactional tariffs from transit telemetry. It includes telemetry inputs 112, a toll calculation engine 114, and a time-series buffer 116.</p>
+<p class="para"><span class="num">[0021]</span> The telemetry inputs 112 are input pipelines that continuously receive data from deepwater ports, electrified rail corridors, and smart highways. Each pipeline is protocol-specific and terminates in a common message format.</p>
+<p class="para"><span class="num">[0022]</span> The toll calculation engine 114 includes hardware multiply-accumulate arrays and comparator units that compute tariffs from telemetry quantities. In one example, the engine computes a truck tariff of 0.15 per kilometer and a rail tariff of 0.02 per ton-kilometer. The tariff parameters are held in configuration registers within the engine. The registers can be written only through an authenticated configuration update that is verified by the cryptographic domain 118 before it takes effect.</p>
+<p class="para"><span class="num">[0023]</span> The time-series buffer 116 temporarily stores high-velocity transit telemetry and permits sequential, append-only entries to stream into database arrays. Writes to the buffer are not blocked by reads or by the toll calculation engine, so that database persistence does not stall tariff computation.</p>
+
+<h3>Cryptographic Domain 118</h3>
+<p class="para"><span class="num">[0024]</span> The cryptographic domain 118 is a security domain that is physically and logically isolated from the ingestion and toll processing domains. It has its own power gating and clock tree. Its only path to the other domains is a one-way gateway first-in, first-out buffer. Data entering the cryptographic domain from the other domains is not returned to them except as processed output.</p>
+<p class="para"><span class="num">[0025]</span> The cryptographic domain includes an AES-256 encryption accelerator and a SHA-512 hash accelerator, shown together as block 120. Every inbound and outbound ledger entry is encrypted or hashed in block 120 before it leaves the die, so that transaction data is protected at the chip boundary.</p>
+<p class="para"><span class="num">[0026]</span> The key management vault 122 is a tamper-resistant silicon storage region that holds the root cryptographic keys of the node. The vault includes tamper sensors. When a sensor reports a physical intrusion, the vault zeroizes its contents before any key can be read out.</p>
+<p class="para"><span class="num">[0027]</span> The mutual TLS block 124 is a hardware networking block that performs handshake, certificate verification, and record protection for connections between regional edge nodes. Performing these steps in hardware mitigates man-in-the-middle attacks at the transport layer without relying on a software network stack.</p>
+
+<h3>DRM and Isolation Gate 126</h3>
+<p class="para"><span class="num">[0028]</span> The isolation gate 126 enforces a security level parameter, referred to in one embodiment as Security Level 4, across the factory equipment connected to the node. The gate includes a write-lock 128, a self-quarantine trigger 130, and a blast-radius isolation circuit 132.</p>
+<p class="para"><span class="num">[0029]</span> The write-lock 128 is a hardware barrier between the external interface and the programming memory of connected automation equipment. A command that would alter an active robotic assembly program is passed only when a verification signal is present. The verification signal may be generated by a physical actuator or by an authenticated out-of-band input. The write-lock cannot be reconfigured by software running on the node.</p>
+<p class="para"><span class="num">[0030]</span> The self-quarantine trigger 130 is an automated circuit loop linked to stress-test matrices within the node. When a stress test fails, or when an internal consistency check indicates that a memory region has been altered, the trigger places the node in a quarantine state in which external writes are refused and only local, verified operations proceed.</p>
+<p class="para"><span class="num">[0031]</span> The blast-radius isolation circuit 132 monitors a count of malformed data frames received from the external network and a threat indicator produced by the cryptographic domain 118 or by the node's intrusion logic. If the threat indicator is asserted, or if the count exceeds a threshold, the circuit asserts a link-drop signal. The link-drop signal disconnects the external network interface. In one example, the threshold is 5,000,000 malformed frames per hour. The circuit keeps the local, air-gapped automation within the facility under control, so that grid stability and local production continue after the external link is removed.</p>
+
+<h3>Gatekeeper and Internal Anomaly Self-Quarantine</h3>
+<p class="para"><span class="num">[0032]</span> The isolation gate 126 includes a quarantine controller that holds one of four states: NORMAL, QUARANTINE, LINK-DROP, and ZEROIZED. In the NORMAL state, external writes are passed to the write-lock 128 subject to the verification described above. In the QUARANTINE state, external writes are refused and only local, verified operations proceed. In the LINK-DROP state, the external network interface is disconnected. In the ZEROIZED state, key material in the key management vault 122 has been erased.</p>
+<p class="para"><span class="num">[0033]</span> Two classes of event drive the quarantine controller. An internal error originates within the node. Examples include a failure of a stress-test circuit in the self-quarantine trigger 130, a parity or consistency fault in a memory region of the ingestion domain 102 or the toll processing domain 110, a mismatch between redundant computations, an out-of-range tariff result from the toll calculation engine 114, and a sequence error in the time-series buffer 116. An external anomaly originates from the external network, for example a malformed-frame count or a threat indicator as described in paragraph [0031].</p>
+<p class="para"><span class="num">[0034]</span> Internal errors are routed to the QUARANTINE state, and external anomalies are routed to the LINK-DROP state. The routing is determined by the origin of the event, not by its magnitude alone. Quarantining the write path leaves local automation and the ledger in place, so that the node can continue local operation while the external path is refused or cut off.</p>
+<p class="para"><span class="num">[0035]</span> A severity aggregator in the isolation gate 126 combines error signals from the ingestion domain 102, the toll processing domain 110, and the cryptographic domain 118. Because the cryptographic domain is coupled to the other domains only through the one-way gateway, the aggregator receives status from those domains but returns no signal to them except the quarantine and link-drop controls it issues.</p>
+<p class="para"><span class="num">[0036]</span> The severity aggregator applies a response ladder. A single correctable event is logged. Repeated events within a monitoring window escalate to QUARANTINE. A quarantine combined with a threat indicator escalates to LINK-DROP. A tamper event from the key management vault 122 escalates to ZEROIZED from any other state. Each transition is written as an entry of the append-only ledger before the new state takes effect.</p>
+<p class="para"><span class="num">[0037]</span> Exit from QUARANTINE requires a recovery verification. The verification is a physically actuated or out-of-band authenticated signal, and software executing on the node cannot generate it. The controller records the reason for quarantine in one-time-programmable memory, so the quarantine state persists across power cycles. Exit from LINK-DROP requires the same verification and a reset of the malformed-frame counter. ZEROIZED is not exited in the field and requires a factory-controlled provisioning process.</p>
+<p class="para"><span class="num">[0038]</span> Because the write-path gate is driven by the state register and not by processor software, external write transactions are refused during quarantine, while the ingestion domain 102 and the toll processing domain 110 continue to process local transactions and the connected automation continues to operate under local control. A software fault that corrupts the processor cannot clear the quarantine encoding, and the reason code survives power cycling.</p>
+
+<h3>Revenue Pooling Bus 134</h3>
+<p class="para"><span class="num">[0039]</span> The revenue pooling bus 134 receives processed transaction values from the ingestion and toll processing domains and provides them to a ledger. It includes an aggregator 136, a ledger block 138, and a disbursement controller 140.</p>
+<p class="para"><span class="num">[0040]</span> The aggregator 136 evaluates incoming transaction values and applies a configured allocation ratio to values associated with designated manufacturing value-added transactions. In one example, the allocation ratio is 60/40. The ratio is a configuration parameter and is not fixed in silicon.</p>
+<p class="para"><span class="num">[0041]</span> The ledger block 138 extracts a configured transaction tax, for example 2 percent of the processed value, and appends metadata for each transaction to an append-only ledger structure. Each appended entry is encrypted by block 120 before storage.</p>
+<p class="para"><span class="num">[0042]</span> The disbursement controller 140 routes amounts from the pool according to a configured schedule. In one example, outputs remain disabled until a ledger status signal indicates that the pool is free of encumbrances.</p>
+
+<h3>Alternative Embodiments</h3>
+<p class="para"><span class="num">[0043]</span> The functions described above may be distributed across multiple chiplets in a single package, with each chiplet implementing one domain and the domains communicating through a die-to-die interface that preserves the one-way gateway between the cryptographic domain and the other domains. The node may also be prototyped on a field-programmable gate array, with the understanding that the isolation properties described herein require the domains to be physically separate in the production device. Thresholds, tariff parameters, allocation ratios, and tax rates are described as configuration values, and other values may be used.</p>
+<p class="para"><span class="num">[0044]</span> Terms such as "approximately" and "about" refer to values within ten percent of the stated value unless otherwise indicated.</p>
+
+<h2>Claims</h2>
+<ol class="claims">
+  <li><p>A revenue processor node, comprising: an ingestion domain comprising a first transceiver interface for a first commerce track and a second transceiver interface for a second commerce track, wherein the first and second transceiver interfaces are arbitrated independently such that traffic on the second commerce track does not block traffic on the first commerce track; a toll processing domain comprising hardware arithmetic units configured to compute a tariff from telemetry inputs, and a time-series buffer configured to accept append-only telemetry entries; a cryptographic domain physically separated from the ingestion domain and the toll processing domain, the cryptographic domain comprising at least one encryption accelerator, at least one hash accelerator, and a tamper-resistant key store; and an isolation gate comprising a write-lock circuit configured to prevent modification of an active control program absent a verification signal, and a blast-radius circuit configured to assert a link-drop signal that disconnects an external network interface when a threat indicator exceeds a threshold, while local control of automation connected to the node is maintained.</p></li>
+  <li><p>The revenue processor node of claim 1, wherein the first commerce track is a bulk enterprise track and the second commerce track is a retail track.</p></li>
+  <li><p>The revenue processor node of claim 1, wherein the ingestion domain further comprises a supplier bidding interface coupled to a low-latency cache, the supplier bidding interface being configured to compute assignment parameters in response to a checkout event without invoking a processor core.</p></li>
+  <li><p>The revenue processor node of claim 1, wherein the ingestion domain further comprises an order queuing buffer configured to package orders into standardized message payloads and to stream the payloads onto an internal ring bus.</p></li>
+  <li><p>The revenue processor node of claim 1, wherein the telemetry inputs comprise a plurality of protocol-specific input pipelines, each terminating in a common message format, the pipelines receiving data from at least one of a maritime port, a rail corridor, and a highway.</p></li>
+  <li><p>The revenue processor node of claim 1, wherein tariff parameters are held in configuration registers of the toll processing domain, and wherein the configuration registers are writable only through an update that the cryptographic domain has authenticated.</p></li>
+  <li><p>The revenue processor node of claim 1, wherein the cryptographic domain is coupled to the ingestion domain and the toll processing domain only through a one-way gateway buffer.</p></li>
+  <li><p>The revenue processor node of claim 1, wherein the key store is configured to zeroize its contents in response to a tamper sensor.</p></li>
+  <li><p>The revenue processor node of claim 1, wherein the cryptographic domain further comprises a hardware mutual TLS block configured to perform handshake and record protection for connections to other nodes.</p></li>
+  <li><p>The revenue processor node of claim 1, wherein the isolation gate further comprises a self-quarantine trigger configured to place the node in a quarantine state, in which external writes are refused, in response to a failure of a stress-test circuit.</p></li>
+  <li><p>The revenue processor node of claim 1, wherein the threat indicator comprises a count of malformed data frames received per unit time, and the threshold is a count per hour.</p></li>
+  <li><p>The revenue processor node of claim 1, further comprising a revenue pooling bus that comprises an aggregator, and a ledger block configured to append transaction entries to an append-only ledger, each entry being encrypted by the cryptographic domain before it is stored.</p></li>
+  <li><p>The revenue processor node of claim 12, wherein the aggregator is configured to apply a configured allocation ratio to transaction values associated with designated manufacturing transactions.</p></li>
+  <li><p>A method of processing transactions at an edge node, comprising: receiving commerce traffic on a first interface and bulk trade traffic on a second interface, the first and second interfaces being arbitrated independently in hardware; computing, in a hardware toll processing domain, a tariff from telemetry inputs; encrypting and hashing, in a cryptographic domain physically separated from the toll processing domain, each ledger entry derived from the tariff before the entry leaves the node; monitoring, in a hardware isolation gate, a count of malformed data frames received from an external network; and asserting, when the count exceeds a threshold or a threat indicator is present, a link-drop signal that disconnects the external network while maintaining local control of automation connected to the node.</p></li>
+  <li><p>The method of claim 14, further comprising refusing, by a write-lock circuit, a command that would modify an active control program absent a verification signal.</p></li>
+  <li><p>The method of claim 14, further comprising appending the tariff to a time-series buffer as an append-only entry without stalling the computing step.</p></li>
+  <li><p>The method of claim 14, further comprising zeroizing root keys held in a tamper-resistant key store in response to a tamper sensor.</p></li>
+  <li><p>The method of claim 14, further comprising entering a quarantine state in response to a failure of a stress-test circuit.</p></li>
+  <li><p>The method of claim 14, wherein the encrypted entry is transmitted over a mutual TLS connection established by a hardware block.</p></li>
+  <li><p>The method of claim 14, wherein the encrypting and hashing are performed by accelerators that are powered and clocked independently of the toll processing domain.</p></li>
+  <li>
+    <p>The revenue processor node of claim 1, wherein the isolation gate comprises a quarantine controller comprising:</p>
+    <p class="indent">a state register storing one of a normal encoding, a quarantine encoding, a link-drop encoding, and a zeroized encoding;</p>
+    <p class="indent">transition logic coupled to the state register, the transition logic receiving an origin indicator that distinguishes an internal error signal generated by the ingestion domain or the toll processing domain from an external anomaly signal generated at the external network interface, the transition logic setting the state register to the quarantine encoding in response to the internal error signal and to the link-drop encoding in response to the external anomaly signal;</p>
+    <p class="indent">a write-path gate coupled to the state register, the write-path gate refusing external write transactions to automation connected to the node while the state register holds the quarantine encoding; and</p>
+    <p class="indent">a one-time-programmable memory coupled to the transition logic, the one-time-programmable memory storing a reason code written upon entry to the quarantine encoding,</p>
+    <p class="indent">wherein the state register returns to the normal encoding only in response to a verification signal received through a hardware path that is not writable by software executing on the node.</p>
+  </li>
+  <li><p>The revenue processor node of claim 21, wherein the transition logic sets the state register to the quarantine encoding in response to an internal error originating within the ingestion domain or the toll processing domain, and sets the state register to the link-drop encoding in response to an anomaly originating from the external network interface, the origin indicator being generated by the transition logic from the source of the signal.</p></li>
+  <li><p>The revenue processor node of claim 21, wherein the isolation gate further comprises a severity aggregator that combines error signals from the ingestion domain, the toll processing domain, and the cryptographic domain, and returns to those domains no signal other than quarantine and link-drop controls.</p></li>
+  <li><p>The revenue processor node of claim 21, wherein the quarantine state is exited only upon a verification signal that software executing on the node cannot generate, and wherein a reason for the quarantine state is stored in one-time-programmable memory such that the quarantine state persists across power cycles.</p></li>
+  <li><p>The revenue processor node of claim 23, wherein the severity aggregator applies a response ladder in which repeated correctable events escalate to the quarantine state.</p></li>
+  <li><p>A method of responding to an internal anomaly in a revenue processor node, comprising: detecting an internal error within a toll processing domain; asserting, by a quarantine controller in a hardware isolation gate, a quarantine state in which external writes are refused while local verified operations continue; detecting an external anomaly from an external network interface; asserting a link-drop state that disconnects the external network interface in response to the external anomaly, wherein selection between the quarantine state and the link-drop state is determined by the origin of the event; and exiting the quarantine state only upon a verification signal not generated by software of the node.</p></li>
+</ol>
+
+<h2>Abstract</h2>
+<div class="abstract">
+<p>A revenue processor node implemented in dedicated silicon separates transaction ingestion, telemetry processing, cryptographic operations, and network isolation into hardware domains. Independently arbitrated transceiver interfaces keep a retail commerce track from blocking a bulk enterprise track. Hardware arithmetic units compute tariffs from transit telemetry and store the results in an append-only buffer. A cryptographic domain, reached only through a one-way gateway, encrypts and hashes ledger entries and holds keys in a tamper-resistant store. A gatekeeper isolation gate quarantines the external write path in response to internal errors, disconnects the external network link in response to external anomalies, and requires a verification signal that software cannot generate to exit quarantine.</p>
+</div>
+
+<p class="doc-footer">Draft for attorney review. Bracketed items are placeholders. Paragraph numbers and claim references were checked against the consolidated draft; a full proofread is recommended before filing.</p>
+
+</div>
+</body>
+</html>
