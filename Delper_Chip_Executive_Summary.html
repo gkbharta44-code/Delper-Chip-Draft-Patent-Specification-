@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Executive Summary: Revenue Processor Node</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fbfbf9;
+    --ink: #1d2126;
+    --muted: #5a626c;
+    --rule: #d8dbdf;
+    --accent: #1d4a5f;
+    --placeholder: #7a6a2e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15181b;
+      --ink: #e7e9ec;
+      --muted: #9aa3ad;
+      --rule: #343a41;
+      --accent: #8fbfd6;
+      --placeholder: #d4bf7a;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #15181b;
+    --ink: #e7e9ec;
+    --muted: #9aa3ad;
+    --rule: #343a41;
+    --accent: #8fbfd6;
+    --placeholder: #d4bf7a;
+  }
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 48px 22px 72px;
+  }
+  header { margin-bottom: 36px; }
+  h1 {
+    font-size: 1.85rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+  .subtitle {
+    color: var(--muted);
+    margin: 0;
+    font-size: 1rem;
+  }
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 44px 0 12px;
+    color: var(--accent);
+  }
+  p { margin: 0 0 16px; }
+  .lede { font-size: 1.1rem; }
+
+  /* Snapshot: a plain ruled table, not cards */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    margin: 0 0 8px;
+  }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 9px 12px 9px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  th {
+    font-weight: 600;
+    width: 34%;
+    color: var(--muted);
+    font-weight: normal;
+  }
+  .placeholder { color: var(--placeholder); font-style: italic; }
+
+  /* Definition list for the four domains */
+  dl { margin: 0 0 8px; }
+  dt {
+    font-weight: 600;
+    margin-top: 18px;
+  }
+  dd {
+    margin: 4px 0 0;
+    color: var(--ink);
+  }
+
+  /* State table */
+  .states th, .states td { font-size: 0.93rem; }
+  .states th { width: auto; font-weight: 600; color: var(--ink); }
+  .states code {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 0.88em;
+  }
+
+  ul.checks {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px;
+  }
+  ul.checks li {
+    padding: 10px 0 10px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  ul.checks li:first-child { border-top: 1px solid var(--rule); }
+
+  .note {
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-top: 48px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media print {
+    body { font-size: 11pt; background: #fff; color: #000; }
+    .wrap { max-width: none; padding: 0; }
+    h2 { break-after: avoid; }
+    table, dl, ul.checks { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Revenue Processor Node with Hardware-Segregated Ingestion, Cryptographic, and Isolation Domains</h1>
+  <p class="subtitle">Executive summary of the draft patent specification, prepared for attorney review</p>
+</header>
+
+<table>
+  <tr><th>Document</th><td>Draft patent specification, consolidated version</td></tr>
+  <tr><th>Applicant</th><td><span class="placeholder">[Delper Group Semiconductor, legal entity to be confirmed]</span></td></tr>
+  <tr><th>Inventors</th><td><span class="placeholder">[To be completed]</span></td></tr>
+  <tr><th>Attorney docket</th><td><span class="placeholder">[Not yet assigned]</span></td></tr>
+  <tr><th>Priority claims</th><td><span class="placeholder">[Pending; statement at paragraph 0001]</span></td></tr>
+  <tr><th>Claims</th><td>26 in total: independent claim 1 (node), claim 14 (method of processing transactions), and claim 26 (method of responding to an internal anomaly)</td></tr>
+  <tr><th>Drawings</th><td>FIG. 1 described. FIGS. 2 to 4 are referenced but not yet prepared.</td></tr>
+</table>
+
+<h2>The invention in brief</h2>
+<p class="lede">The disclosure describes a revenue processor node built as a single integrated circuit. The node separates four functions into dedicated hardware domains: commerce ingestion, toll computation from transit telemetry, cryptographic protection of transaction data, and network isolation for connected industrial equipment.</p>
+<p>In the example embodiment the chip is fabricated in a 5 nanometer FinFET process. It is deployed at coastal hubs and within core transaction datacenters, either alone or as one of several nodes on a ring bus.</p>
+
+<h2>The problem addressed</h2>
+<p>The background identifies three weaknesses in the common approach of running transaction workloads as software on general-purpose processors. High-volume retail traffic can slow high-value bulk trade that shares the same pipeline. Cryptographic keys handled in software share memory and privilege boundaries with application code. Software-only isolation of connected industrial systems can be bypassed by an attacker who has compromised the host. A further concern is that high-velocity transit telemetry needs buffering that absorbs bursts without stalling tariff calculations.</p>
+
+<h2>How the node responds</h2>
+<dl>
+  <dt>Ingestion and commerce engine</dt>
+  <dd>Two commerce tracks, bulk enterprise and retail, each have their own queue and arbiter, so a surge in retail traffic cannot hold up bulk trade. A supplier bidding block with a local low-latency cache computes assignment parameters at checkout without involving a processor core.</dd>
+
+  <dt>Toll processing domain</dt>
+  <dd>Hardware multiply-accumulate arrays compute tariffs from telemetry received from ports, rail corridors and highways. An append-only time-series buffer records the telemetry, so database persistence does not stall the computation. Tariff parameters can change only through an update the cryptographic domain has authenticated.</dd>
+
+  <dt>Cryptographic domain</dt>
+  <dd>This domain has its own power gating and clock tree and connects to the other domains only through a one-way buffer. It contains AES-256 and SHA-512 accelerators, a tamper-resistant key vault that erases its keys when a tamper sensor fires, and a hardware mutual TLS block for connections between nodes.</dd>
+
+  <dt>Isolation gate</dt>
+  <dd>A write-lock stops changes to active control programs on connected automation unless a verification signal is present. A self-quarantine trigger responds to failed stress tests and memory inconsistencies. A blast-radius circuit drops the external network link when a threat indicator or a malformed-frame count crosses a threshold, while local automation stays under local control.</dd>
+</dl>
+
+<h2>The central idea: responses set by origin</h2>
+<p>The main technical feature is how the isolation gate responds to a problem. The response depends on where the problem came from, not only on how severe it is. Internal faults lead to quarantine, which blocks external writes while local verified work continues. External attacks lead to a link drop, which disconnects the network while keeping local automation running. Both states persist across power cycles, and returning from them requires a signal that software on the node cannot generate.</p>
+
+<table class="states">
+  <tr><th>State</th><td>Entered when</td><td>Effect</td></tr>
+  <tr><td><code>NORMAL</code></td><td>Default operation</td><td>External writes are passed to the write-lock, subject to verification</td></tr>
+  <tr><td><code>QUARANTINE</code></td><td>An internal error, such as a stress-test failure or memory fault</td><td>External writes are refused. Local verified operations continue. Exit needs a hardware or out-of-band verification signal.</td></tr>
+  <tr><td><code>LINK-DROP</code></td><td>An external anomaly, such as a malformed-frame count or threat indicator</td><td>The external network interface is disconnected. Exit needs the same verification and a counter reset.</td></tr>
+  <tr><td><code>ZEROIZED</code></td><td>A tamper event at the key vault</td><td>Key material is erased. This state is not exited in the field and needs factory provisioning.</td></tr>
+</table>
+<p>A response ladder adds further protection. A single correctable event is logged. Repeated events within a monitoring window escalate to quarantine. Quarantine combined with a threat indicator escalates to link drop. Each transition is written to the ledger before it takes effect.</p>
+
+<h2>Revenue pooling</h2>
+<p>Processed values reach a revenue pooling bus. An aggregator applies a configurable allocation ratio to designated manufacturing transactions; the example ratio is 60/40. A ledger block takes a configurable transaction tax, for example 2 percent, and appends encrypted entries to an append-only ledger. Disbursements stay disabled until the ledger reports that the pool has no encumbrances. These values are configuration parameters, not fixed features of the silicon.</p>
+
+<h2>Claim structure</h2>
+<p>Claim 1 is the broadest apparatus claim. It requires the independently arbitrated commerce interfaces, the toll processing domain, the physically separated cryptographic domain, and the isolation gate with its write-lock and blast-radius circuit. Dependent claims add the supplier bidding block, protocol-specific telemetry pipelines, authenticated tariff registers, the one-way gateway, zeroization, mutual TLS, self-quarantine, the malformed-frame threshold, and the revenue pooling bus.</p>
+<p>Claim 14 covers the edge-node transaction method. Claim 26 covers the anomaly response method, in which quarantine and link drop are chosen by the origin of the event and quarantine is exited only on a verification signal that software cannot generate. The full origin-based quarantine controller is claimed in dependent claim 21, which depends on claim 1, and in the independent claim 26.</p>
+
+<h2>Items to resolve before filing</h2>
+<ul class="checks">
+  <li>Complete the placeholders: applicant legal entity, inventors, docket number, priority statement at paragraph 0001, and federal sponsorship statement at paragraph 0002.</li>
+  <li>Prepare FIGS. 2 to 4 (ingestion datapath, isolation gate state machine, and method flowchart). The state machine figure should match the four states in paragraph 0032.</li>
+  <li>Remove the product name in paragraph 0011 ("Aegis DRM Node Rev 4.1") and use only the generic term for the node.</li>
+  <li>Rename the heading "DRM and Isolation Gate 126" and the paragraph describing it. "DRM" usually means digital rights management, which does not match the function described, and the term may confuse readers about scope. The "Security Level 4" term appears once and needs a definition or removal.</li>
+  <li>Decide whether to keep the deployment-specific figures, including the hub count, the buyer-account count, and the 5,000,000 frames-per-hour threshold. They are described as examples and may need updating or may invite questions about the claim scope.</li>
+  <li>Confirm the abstract meets the length limit for the target jurisdiction and that the term "gatekeeper" in paragraph 0015 is either used consistently or dropped, since the claims do not use it.</li>
+</ul>
+
+<p class="note">This summary describes the uploaded draft and does not add to or alter its content. It is not legal advice; the specification and claims should be reviewed by the responsible patent attorney before filing.</p>
+
+</div>
+</body>
+</html>
